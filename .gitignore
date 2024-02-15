@@ -15,5 +15,5 @@
 # vendor/
 
 tmp/
-public/app.wasm
+public/app/app.wasm
 frontend/**/**/*.go

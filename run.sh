@@ -8,6 +8,12 @@ then
 	echo "air installed successfully."
 fi
 
+if ! command -v gox &> /dev/null; then
+	echo "gox could not be found, installing..."
+	go install github.com/8byt/gox@latest
+	echo "gox installed successfully."
+fi
+
 # Function to kill both air processes when exiting
 cleanup() {
 	echo "Shutting down Air instances..."
