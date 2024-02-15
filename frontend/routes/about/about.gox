@@ -1,0 +1,35 @@
+package about
+
+import (
+	"github.com/hexops/vecty"
+	router "marwan.io/vecty-router"
+
+	. "frontend.alloy.phyce.dev/components/common/header"
+	. "frontend.alloy.phyce.dev/components/common/footer"
+)
+
+
+type page struct {
+	vecty.Core
+}
+
+func Index() *page {
+	return &page{}
+}
+
+func (p *page) Render() vecty.ComponentOrHTML {
+	return <div class="flex flex-col min-h-screen overflow-hidden">
+		<Header/>
+		<main class="grow text-center justify-center">
+			<h1 class="text-4xl">About</h1>
+			<p>
+				Hurricane is a full-stack development solution for golang, 
+				with the ability to write code in a similar style to JSX.<br/>
+				Write your own fullstack SPA in golang today!
+			</p>
+			<br/>
+			{router.Link("/", "Back to main page", router.LinkOptions{Class:"underline"})}
+		</main>
+		<Footer/>
+	</div>
+}

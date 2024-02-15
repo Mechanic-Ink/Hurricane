@@ -1,0 +1,33 @@
+package index
+
+import (
+	"github.com/hexops/vecty"
+	router "marwan.io/vecty-router"
+
+	. "frontend.alloy.phyce.dev/components/common/header"
+	. "frontend.alloy.phyce.dev/components/common/footer"
+)
+
+type page struct {
+	vecty.Core
+}
+
+func Index() *page {
+	return &page{}
+}
+
+func (p *page) Render() vecty.ComponentOrHTML {
+	return <div class="flex flex-col min-h-screen overflow-hidden">
+		<Header/>
+		<main class="grow text-center justify-center">
+			<div class="">
+				<img class="inline-block object-scale-down h-80 w-80" src="/img/logo.png"/>
+			</div>
+			{vecty.Text("Add your content here")}
+			<br/>
+			{router.Link("/about", "Another page here", router.LinkOptions{Class:"underline"})}
+		</main>
+		<Footer/>
+	</div>
+}
+//			<a class="underline" href="/about">{vecty.Text("Another page here pls")}</a>

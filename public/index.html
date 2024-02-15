@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<script src="/app/wasm_exec.js"></script>
+<script src="/app/tailwind.js"></script>
+<script>
+	const go = new Go();
+	let wasmModuleInstance = null;
+	let lastModifiedTime = null;
+	let started = false;
+
+	async function loadWasmModule() {
+		try {
+			// Use the file's last modification timestamp and the current timestamp to form the request URL
+			const now = new Date().getTime(); // Current timestamp to avoid cache
+			const timestampQuery = lastModifiedTime ? `?timestamp=${lastModifiedTime}&now=${now}` : `?now=${now}`;
+			const response = await fetch(`/app.wasm${timestampQuery}`);
+
+			if (response.ok) {
+				const contentType = response.headers.get('Content-Type');
+
+				if (contentType.includes('application/json')) {
+					const data = await response.json();
+
+					if (data.last_updated !== 0) lastModifiedTime = data.last_updated;
+
+					// setTimeout(loadWasmModule, 1000);
+					return;
+				}
+
+				// If response is the wasm file, process and instantiate it
+				if (contentType.includes('application/wasm')) {
+					const wasmArrayBuffer = await response.arrayBuffer();
+					const { instance } = await WebAssembly.instantiate(wasmArrayBuffer, go.importObject);
+					wasmModuleInstance = instance;
+					go.run(instance);
+
+					// Update lastModifiedTime based on the response's Last-Modified header
+					const lastModifiedHeader = response.headers.get('Last-Modified');
+					if (lastModifiedHeader) lastModifiedTime = new Date(lastModifiedHeader).getTime() / 1000;
+				}
+			} else {
+				console.error('Failed to load app.wasm:', response.status);
+			}
+		} catch (error) {
+			console.error('Error loading app.wasm:', error);
+		}
+	}
+
+
+	async function startCheckingForUpdates(interval = 500) { // Adjusted interval for practicality
+		if(!started){
+			started = true;
+			await loadWasmModule();
+			setInterval(loadWasmModule, interval); // Use setInterval for periodic checks
+		}
+	}
+
+	window.addEventListener('load', () => startCheckingForUpdates());
+</script>

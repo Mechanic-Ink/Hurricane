@@ -1,0 +1,19 @@
+package footer
+
+import (
+	"github.com/hexops/vecty"
+)
+
+type Footer struct {
+	vecty.Core
+}
+
+func (e *Footer) Render() vecty.ComponentOrHTML {
+	return <footer>
+		<div class="bg-slate-300 text-center">
+			<div class="px-4">
+				Made by <a target="_blank" class="underline" href="https://mechanic.ink">Mechanic Ink</a>
+			</div>
+		</div>
+	</footer>
+}

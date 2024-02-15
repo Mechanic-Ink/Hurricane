@@ -1,0 +1,9 @@
+{
+	"HttpPort"	: 8088,
+	"SSL"		: {
+		"Enabled" 		: false,
+		"Certificate"	: "path/to/cert.pem",
+		"PrivateKey"	: "path/to/privkey.pem"
+	}
+
+}

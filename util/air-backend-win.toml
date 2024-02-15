@@ -1,0 +1,22 @@
+root = "."
+tmp_dir = "tmp/"
+
+[build]
+  cmd = "powershell.exe -File util/build_backend.ps1"
+  bin = "tmp/server.exe"
+  include_ext = ["go", "gox", "mod", "sum", "env", "js", "css", "html"]
+  exclude_dir = ["frontend", "tmp"]
+  delay = 1000
+
+[log]
+  time = true
+
+[color]
+  main = "yellow"
+  watcher = "cyan"
+  build = "green"
+  runner = "magenta"
+
+[serve]
+  cmd = "tmp/server.exe"
+  env = ["ENVIRONMENT=development"]

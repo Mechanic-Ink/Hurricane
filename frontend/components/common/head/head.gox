@@ -1,0 +1,19 @@
+package head
+
+import (
+	"github.com/hexops/vecty"
+)
+
+type Head struct {
+	vecty.Core
+	Title string
+}
+
+func (e *Head) Render() vecty.ComponentOrHTML {
+	return <head>
+		<link rel="icon" href="/img/favicon.png" type="image/png" />
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>WE IN BABY YEAH</title>
+	</head>
+}
