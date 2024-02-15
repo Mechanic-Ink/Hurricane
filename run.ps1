@@ -1,3 +1,10 @@
+$airInstalled = Get-Command air -ErrorAction SilentlyContinue
+if ($null -eq $airInstalled) {
+    Write-Host "air is not installed. Installing..."
+    go install github.com/cosmtrek/air@latest
+    $env:Path += ";$(go env GOPATH)\bin"
+}
+
 $frontendAirCommand = "air -c util/air-frontend-win.toml"
 $frontendProcess = Start-Process -FilePath "powershell" -ArgumentList "-Command", $frontendAirCommand -PassThru -NoNewWindow
 $frontendPID = $frontendProcess.Id
