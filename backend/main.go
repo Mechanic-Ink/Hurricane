@@ -5,11 +5,10 @@ import (
 	"strings"
 	"strconv"
 	"net/http"
-	// "time"
 	"os"
 	// "fmt"
 
-	config "backend.alloy.phyce.dev/config"
+	config "github.com/mechanic-ink/hurricane/backend/config"
 )
 
 func main() {
@@ -72,3 +71,5 @@ func main() {
 		router.Run(":" + strconv.Itoa(config.HttpPort))
 	}
 }
+
+

@@ -5,10 +5,10 @@ import (
 	router "marwan.io/vecty-router"
 	"fmt"
 	"sync"
-	"time"
+	//"time"
 
-	. "frontend.alloy.phyce.dev/components/common/header"
-	. "frontend.alloy.phyce.dev/components/common/footer"
+	. "github.com/mechanic-ink/hurricane/frontend/components/common/header"
+	. "github.com/mechanic-ink/hurricane/frontend/components/common/footer"
 )
 
 
@@ -39,10 +39,10 @@ func (p *page) Render() vecty.ComponentOrHTML {
 			</button>
 			<p>Count: {vecty.Text(fmt.Sprintf("%d", p.Counter))}</p>
 			<br/>
-			<button class="btn-primary" onClick={p.SpeedCountThread}>
+			<button class="btn-primary" onclick="startSpeedCountFromGo()">
 				COUNTER {vecty.Text(fmt.Sprintf("%d", p.TimeLeft))}
 			</button>
-			<p>Count: {vecty.Text(fmt.Sprintf("%d", p.SpeedCounter))}</p>
+			<div>Count: <div id="counter">{vecty.Text(fmt.Sprintf("%d", p.SpeedCounter))}</div></div>
 			<br/>
 			{router.Link("/", "Back to main page", router.LinkOptions{Class:"underline"})}
 		</main>
@@ -59,37 +59,3 @@ func (p *page) Count(event *vecty.Event) {
 
 var lock sync.Mutex
 var isCounting bool
-
-func (p *page) SpeedCountThread(event *vecty.Event) {
-	go p.SpeedCount(event)
-}
-
-func (p *page) SpeedCount(event *vecty.Event) {
-	//Unfortunatelyt we can't run this on a separate thread because 
-	//WASM currently only runs on a single thread or something like that
-	lock.Lock()
-	if isCounting {
-		lock.Unlock()
-		return
-	}
-	isCounting = true
-	lock.Unlock()
-
-	defer func() {
-		lock.Lock()
-		isCounting = false
-		lock.Unlock()
-	}()
-
-	startTime := time.Now()
-	p.TimeLeft = 60
-	go vecty.Rerender(p)
-	for time.Since(startTime) < time.Minute {
-		p.SpeedCounter++
-		fmt.Println("p.SpeedCounter")
-		fmt.Println(p.SpeedCounter)
-		p.TimeLeft = 60 - uint(time.Since(startTime).Seconds())
-	}
-	p.TimeLeft = 0
-	vecty.Rerender(p)
-}

@@ -1,4 +1,4 @@
-module backend.alloy.phyce.dev
+module github.com/mechanic-ink/hurricane/backend
 
 go 1.21.6
 

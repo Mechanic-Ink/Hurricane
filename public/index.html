@@ -54,5 +54,21 @@
 		}
 	}
 
+
+	// Function to update the DOM with the new counter value
+	async function updateCounter(value) {
+	    document.getElementById("counter").innerText = value;
+	}
+
+	// Function to start the speed count from Go
+	async function startSpeedCountFromGo() {
+		alert("about to start trying!");
+	    const go = new Go();
+	    WebAssembly.instantiateStreaming(fetch(`/app.wasm`), go.importObject).then((result) => {
+	        go.run(result.instance);
+	        window.startSpeedCount(updateCounter);
+	    });
+	}
+
 	window.addEventListener('load', () => startCheckingForUpdates());
 </script>

@@ -4,8 +4,8 @@ import (
 	"github.com/hexops/vecty"
 	router "marwan.io/vecty-router"
 
-	. "frontend.alloy.phyce.dev/components/common/header"
-	. "frontend.alloy.phyce.dev/components/common/footer"
+	. "github.com/mechanic-ink/hurricane/frontend/components/common/header"
+	. "github.com/mechanic-ink/hurricane/frontend/components/common/footer"
 )
 
 type page struct {

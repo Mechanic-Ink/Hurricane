@@ -1,6 +1,6 @@
 cd .\frontend\
 
-./gox ./
+gox ./
 
 $env:GOOS = "js"
 $env:GOARCH = "wasm"

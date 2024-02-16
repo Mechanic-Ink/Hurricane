@@ -1,0 +1,56 @@
+package main
+
+import (
+	"github.com/hexops/vecty"
+	element"github.com/hexops/vecty/elem"
+	router "marwan.io/vecty-router"
+	"time"
+	"syscall/js"
+
+
+	index "github.com/mechanic-ink/hurricane/frontend/routes/index"
+	about "github.com/mechanic-ink/hurricane/frontend/routes/about"
+
+	. "github.com/mechanic-ink/hurricane/frontend/components/common/head"
+
+)
+
+func main() {
+	registerCallbacks()
+
+	error := vecty.RenderInto("head", &Head{})
+	if error != nil {
+		return
+	}
+	vecty.RenderBody(&SPA{})
+}
+
+type SPA struct {
+	vecty.Core
+}
+
+func (app SPA) Render() vecty.ComponentOrHTML {
+	return element.Body(
+		router.NewRoute("/", index.Index(), router.NewRouteOpts{ExactMatch: true}),
+		router.NewRoute("/about", about.Index(), router.NewRouteOpts{ExactMatch: true}),
+	)
+}
+
+func registerCallbacks() {
+	js.Global().Set("startSpeedCount", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		go speedCount(args[0])
+		return nil
+	}))
+}
+
+func speedCount(jsCallback js.Value) {
+	startTime := time.Now()
+	var speedCounter uint64 = 0;
+	for time.Since(startTime) < time.Minute {
+		speedCounter++
+
+		jsCallback.Invoke(speedCounter)
+
+		time.Sleep(1)
+	}
+}
