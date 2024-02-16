@@ -7,7 +7,7 @@ import (
 	"net/http"
 	// "time"
 	"os"
-	"fmt"
+	// "fmt"
 
 	config "backend.alloy.phyce.dev/config"
 )
@@ -28,29 +28,21 @@ func main() {
 		filePath := "./public/app/app.wasm"
 		fileInfo, err := os.Stat(filePath)
 		if err != nil {
-			// Handle file access errors
 			c.Status(http.StatusInternalServerError)
 			return
 		}
 
-		// Get Unix timestamp of the file's last modification
 		fileLastModifiedUnix := fileInfo.ModTime().Unix()
-		fmt.Println("fileLastModifiedUnix")
-		fmt.Println(fileLastModifiedUnix)
 
-		// Extract 'timestamp' query parameter and convert to Unix timestamp
 		timestampStr := c.Query("timestamp")
 		if timestampStr != "" {
 			providedTimestamp, err := strconv.ParseInt(timestampStr, 10, 64)
 			if err != nil {
-				// Handle invalid timestamp format
 				c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid timestamp format"})
 				return
 			}
 
-			// If the provided timestamp exactly matches the file's last modified timestamp
 			if providedTimestamp == fileLastModifiedUnix {
-				// Return a specific JSON response indicating no update is needed
 				c.JSON(http.StatusOK, gin.H{"last_updated": 0})
 				return
 			}

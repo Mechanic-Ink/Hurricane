@@ -27,6 +27,13 @@ function Ensure-GoBinPathInPath {
 	}
 }
 
+# Delete .go files in frontend/common and frontend/components recursively
+$pathsToDeleteFrom = @("frontend/common", "frontend/components")
+foreach ($path in $pathsToDeleteFrom) {
+	Get-ChildItem -Path $path -Recurse -Filter *.go | Remove-Item -Force
+	Write-Host "Deleted .go files from $path"
+}
+
 $frontendAirCommand = "air -c util/air-frontend-win.toml"
 $frontendProcess = Start-Process -FilePath "powershell" -ArgumentList "-Command", $frontendAirCommand -PassThru -NoNewWindow
 $frontendPID = $frontendProcess.Id

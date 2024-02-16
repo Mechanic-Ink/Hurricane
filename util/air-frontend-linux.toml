@@ -4,7 +4,7 @@ tmp_dir = "tmp/"
 [build]
   cmd = "sh util/build_frontend.sh"
   bin = "simple"  # Adjust if necessary. This field needs to reflect what your build command outputs or expects.
-  include_ext = ["js", "css", "html", "gox"]
+  include_ext = ["js", "html", "gox"]
   exclude_dir = ["backend", "tmp"]
   delay = 1000
 

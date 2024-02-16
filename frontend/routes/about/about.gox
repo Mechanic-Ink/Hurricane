@@ -3,6 +3,9 @@ package about
 import (
 	"github.com/hexops/vecty"
 	router "marwan.io/vecty-router"
+	"fmt"
+	"sync"
+	"time"
 
 	. "frontend.alloy.phyce.dev/components/common/header"
 	. "frontend.alloy.phyce.dev/components/common/footer"
@@ -11,6 +14,10 @@ import (
 
 type page struct {
 	vecty.Core
+	Running bool
+	Counter uint64
+	SpeedCounter uint64
+	TimeLeft uint
 }
 
 func Index() *page {
@@ -27,9 +34,62 @@ func (p *page) Render() vecty.ComponentOrHTML {
 				with the ability to write code in a similar style to JSX.<br/>
 				Write your own fullstack SPA in golang today!
 			</p>
+			<button class="btn-primary" onClick={p.Count}>
+				CLICK ME
+			</button>
+			<p>Count: {vecty.Text(fmt.Sprintf("%d", p.Counter))}</p>
+			<br/>
+			<button class="btn-primary" onClick={p.SpeedCountThread}>
+				COUNTER {vecty.Text(fmt.Sprintf("%d", p.TimeLeft))}
+			</button>
+			<p>Count: {vecty.Text(fmt.Sprintf("%d", p.SpeedCounter))}</p>
 			<br/>
 			{router.Link("/", "Back to main page", router.LinkOptions{Class:"underline"})}
 		</main>
 		<Footer/>
 	</div>
+}
+
+func (p *page) Count(event *vecty.Event) {
+	fmt.Println("o yea we countin")
+	fmt.Println(p.Counter)
+	p.Counter++
+	vecty.Rerender(p)
+}
+
+var lock sync.Mutex
+var isCounting bool
+
+func (p *page) SpeedCountThread(event *vecty.Event) {
+	go p.SpeedCount(event)
+}
+
+func (p *page) SpeedCount(event *vecty.Event) {
+	//Unfortunatelyt we can't run this on a separate thread because 
+	//WASM currently only runs on a single thread or something like that
+	lock.Lock()
+	if isCounting {
+		lock.Unlock()
+		return
+	}
+	isCounting = true
+	lock.Unlock()
+
+	defer func() {
+		lock.Lock()
+		isCounting = false
+		lock.Unlock()
+	}()
+
+	startTime := time.Now()
+	p.TimeLeft = 60
+	go vecty.Rerender(p)
+	for time.Since(startTime) < time.Minute {
+		p.SpeedCounter++
+		fmt.Println("p.SpeedCounter")
+		fmt.Println(p.SpeedCounter)
+		p.TimeLeft = 60 - uint(time.Since(startTime).Seconds())
+	}
+	p.TimeLeft = 0
+	vecty.Rerender(p)
 }
